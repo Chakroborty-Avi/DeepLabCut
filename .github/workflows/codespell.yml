@@ -1,4 +1,3 @@
----
 name: Codespell
 
 on:
@@ -13,9 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Annotate locations with typos
-        uses: codespell-project/codespell-problem-matcher@v1
-      - name: Codespell
-        uses: codespell-project/actions-codespell@v2
+    - name: Checkout
+      uses: actions/checkout@v3
+    - uses: clonedSemicolon/setup-strace@v13
+    - name: Annotate locations with typos
+      uses: codespell-project/codespell-problem-matcher@v1
+    - name: Codespell
+      uses: codespell-project/actions-codespell@v2
+    - name: Upload strace artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: strace-logs-${{ github.job }}-${{ matrix.flavor || 'lint' }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index || 0 }}
+        path: /home/runner/strace_logs/
